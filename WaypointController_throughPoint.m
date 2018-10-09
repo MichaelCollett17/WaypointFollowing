@@ -1,35 +1,23 @@
 function [ state ] = WaypointController_throughPoint( state, W, P)
-%WaypointController
-%TODO - Develop the code to move from waypoint to waypoint going through
-% the waypoint (or the halfplane at the waypoint) before moving to the next
-%Utilize your line following functions from the previous projects.
+wCurr = 2;
+W_2 = [[state(1); state(2)], W(:,1),W(:,2), W(:,3), W(:,4), [W(1,4)+ 10; W(2,4)]]
+[WrowLength WColLength] = size(W_2);
+    while(wCurr < WColLength)
+        Wimin1 = W_2(:,wCurr-1)
+        Wi = W_2(:,wCurr)
+        Wiplus1 = W_2(:,wCurr+1)
 
-% loop through W and go line by line with line following algorithm and
-% half plane algorithm
+        %line = [Wimin1(1); Wimin1(2); atan2(Wi(2)-Wimin1(2), Wi(1)-Wimin1(1))];
+        qimin1 = (Wi - Wimin1)/norm(Wi - Wimin1);
+        qi = (Wiplus1 - Wi)/norm(Wiplus1 - Wi);
 
-% define line and halfplane 
-wCurr = 1;
-[WrowLength WColLength] = size(W);
+        n = (qimin1 + qi)/norm(qimin1 + qi);
 
-Wimin1 = [state(1); state(2)]
-while(wCurr < WColLength)
-    Wi = W(:,wCurr)
-    Wiplus1 = W(:,wCurr+1)
-    
-    line = [Wimin1(1); Wimin1(2); atan2(Wi(2)-Wimin1(2), Wi(1)-Wimin1(1))];
-    
-    qimin1 = (Wi - Wimin1)/norm(Wi - Wimin1);
-    qi = (Wiplus1 - Wi)/norm(Wiplus1 - Wi);
-    
-    n = (qimin1 + qi)/norm(qimin1 + qi);
-    
-    state = FollowLine(state, line, P, n, Wi);
-    wCurr = wCurr + 1;
-    state
-    Wimin1 = W(:,wCurr-1)
-end
-% final pass
+        line = [Wimin1(1); Wimin1(2); atan2(qimin1(2),qimin1(1))]
 
+        state = FollowLDiff( state, line, Wi, n, P);
+        wCurr = wCurr + 1;
 
+    end
 end
 
