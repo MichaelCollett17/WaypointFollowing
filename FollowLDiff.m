@@ -1,6 +1,6 @@
 function [ state ] = FollowLDiff( state, lineToFollow, Wi, n, P)
     v = P.v_const;  %constant velocity of 50 cm/sec
-    kh = 0.05;
+    kh = 0.09;
     pose = state(1:3);
     while(~((([state(1);state(2)]-Wi).' * n)>=0))
         x = lineToFollow(1);
@@ -13,7 +13,7 @@ function [ state ] = FollowLDiff( state, lineToFollow, Wi, n, P)
             ];
         l_T_w = inv(w_T_l);
         l_b = l_T_w*w_b;         
-        theta_c = lineToFollow(3)-((2/pi)*(deg2rad(45))*atan(kh*l_b(2)));       
+        theta_c = lineToFollow(3)-((2/pi)*(deg2rad(55))*atan(kh*l_b(2)));       
         theta_diff = theta_c - pose(3);
         
         pose = propagatePose(pose, v, theta_diff, P.delta_t);

@@ -28,7 +28,7 @@ end
 plot(W(1,:), W(2,:), 'r*');
 
 %This is a switch you will need to set manually for the different runs.
-if(1)
+if(0)
     state = WaypointController_throughPoint(state, W, P);
 else
     state = WaypointController_roundCorner(state, W, P);
